@@ -12,7 +12,17 @@ using namespace std;
  */
 template <typename T>
 bool isDAG(const Graph<T>* g)  {
-    //TODO
+    for (Vertex<T>* v : g->getVertexSet()) {
+        v->setVisited(false);
+        v->setProcessing(false);
+    }
+    for (Vertex<T>* v : g->getVertexSet()) {
+        if (!v->isVisited()) {
+            if (!dfsIsDAG(v)) {
+                return false;
+            }
+        }
+    }
     return true;
 }
 
@@ -22,7 +32,19 @@ bool isDAG(const Graph<T>* g)  {
  */
 template<class T>
 bool dfsIsDAG(Vertex<T> *v)  {
-    //TODO
+    v->setVisited(true);
+    v->setProcessing(true);
+    for (Edge<T> adj : v->getAdj()) {
+        auto d = adj.getDest();
+        if (d->isProcessing()) {
+            return false;
+        }
+        if (!d->isVisited()) {
+            if (!dfsIsDAG(d)) {
+                return false;
+            }
+        }
+    }
+    v->setProcessing(false);
     return true;
 }
-
