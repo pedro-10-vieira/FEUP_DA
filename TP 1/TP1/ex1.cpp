@@ -12,7 +12,42 @@ template <typename T>
  * Follows the algorithm described in theoretical classes.
  */
 vector<T> topsort(const Graph<T>* g) {
+    Graph<T> copy = *g;
+    if (!isDAG(g)) {
+        return vector<T>();
+    }
     vector<T> res;
-    //TODO
+    queue<Vertex<T>*> v_queue;
+    for (Vertex<T>* v : copy.getVertexSet()) {
+        v->setIndegree(0);
+    }
+    for (Vertex<T>* v : copy.getVertexSet()) {
+        for (Edge<T> edge : v->getAdj()) {
+            Vertex<T>* e = edge.getDest();
+            T value = e->getIndegree();
+            e->setIndegree(value + 1);
+        }
+    }
+    for (Vertex<T>* v : copy.getVertexSet()) {
+        if (v->getIndegree() == 0) {
+            v_queue.push(v);
+        }
+    }
+    while (!v_queue.empty()) {
+        auto u = v_queue.front();
+        auto adj = u->getAdj();
+        for (Edge<T> edge : adj) {
+            auto v = edge.getDest();
+//            copy.removeEdge(u->getInfo(), v->getInfo());
+            auto value = v->getIndegree();
+            v->setIndegree(value - 1);
+            if (v->getIndegree() == 0) {
+                v_queue.push(v);
+            }
+        }
+        v_queue.pop();
+        res.push_back(u->getInfo());
+//        copy.removeVertex(u->getInfo());
+    }
     return res;
 }
