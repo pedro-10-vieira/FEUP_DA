@@ -34,11 +34,9 @@ vector<T> topsort(const Graph<T>* g) {
     }
     while (!v_queue.empty()) {
         auto u = v_queue.front();
-        auto adj = u->getAdj();
-        for (Edge<T> edge : adj) {
+        for (Edge<T> edge : u->getAdj()) {
             auto v = edge.getDest();
-            auto value = v->getIndegree();
-            v->setIndegree(value - 1);
+            v->setIndegree(v->getIndegree() - 1);
             if (v->getIndegree() == 0) {
                 v_queue.push(v);
             }
